@@ -1,8 +1,22 @@
 import numpy as np
+from rasterio._warp import Resampling
 from rasterio.crs import CRS
 
 import rasterio
 from rasterio.merge import merge
+from rasterio.warp import reproject
+
+
+
+def crop_to_transform(src_img, src_transform, dst_transform, shape, src_crs=32633, dst_crs=32633, order=0):
+
+        return reproject(src_img.astype('float'), np.zeros(shape),
+                  src_transform=src_transform,
+                  dst_transform=dst_transform,
+                  src_crs=CRS.from_epsg(src_crs),
+                  dst_crs=CRS.from_epsg(dst_crs),
+                  num_threads=4,
+                  resampling=Resampling.nearest if order==0 else Resampling.bilinear)
 
 
 def to_tiff(filepath, data, transform, no_data_val=None, crs=32633):
