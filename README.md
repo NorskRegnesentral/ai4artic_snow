@@ -27,7 +27,8 @@ Make sure you are running the code on a computer with python 3 and GDAL installe
 python main.py 
 ```
 
-- main.py: A script to run the entire snow-pipeline; 
+- main.py: A script to run the entire snow-pipeline
+ 
     0. user specify which Sentinel-3 scenes to run the algorithm on
     1. data-downloading
     2. preprocessing (conversion to reflectance) 
