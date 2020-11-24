@@ -360,7 +360,6 @@ class _UpConv(nn.Module):
             x = self.bn2(x)
 
         return x
-from __future__ import print_function, division
 
 ###############################################################################
 # BSD 3-Clause License
