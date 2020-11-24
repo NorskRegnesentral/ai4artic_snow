@@ -29,11 +29,11 @@ python main.py
 
 - main.py: A script to run the entire snow-pipeline
  
-    0. user specify which Sentinel-3 scenes to run the algorithm on
-    1. data-downloading
-    2. preprocessing (conversion to reflectance) 
-    3. deep learning prediction 
-    4. mosaicing and export 
+    1. user specify which Sentinel-3 scenes to run the algorithm on
+    2. data-downloading
+    3. preprocessing (conversion to reflectance) 
+    4. deep learning prediction 
+    5. mosaicing and export 
 
         
 ### Contact
