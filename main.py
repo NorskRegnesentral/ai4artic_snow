@@ -26,7 +26,7 @@ if __name__ == "__main__":
     for s3_scene_identifier in scenes:
 
         # Download scene
-        zip_file = download_sentinel_data(s3_scene_identifier, os.path.dirname(os.path.abspath(__file__)) )
+        safe_file = download_sentinel_data(s3_scene_identifier, os.path.dirname(os.path.abspath(__file__)) )
 
         # Convert from swath mode to radiance
         (
@@ -39,7 +39,7 @@ if __name__ == "__main__":
             S7_BT_in,
             S8_BT_in,
             S9_BT_in,
-        ),transform = preprocess(s3_scene_identifier, epsg)
+        ),transform = preprocess(safe_file, epsg)
 
         # Predict
         fsc_tiff, rgb_tiff = predict(
