@@ -19,27 +19,55 @@ def fsc_to_color(fsc_map, export):
     )
 
 
-def sgs_to_color(fsc_map, export):
+def sgs_to_color(sgs_map, export):
     """
     Standard coloring for SGS maps
     Args:
-        fsc_map: (M x N)  - values 0-100 = fsc %, -1 = cloud, -2 = no data / outside ROI
+        sgs_map: (M x N)  - values 0-100 = fsc %, -1 = cloud, -2 = no data / outside ROI
         export (bool): wheter or not the output is ment export to tiff file or presentation (slightly different color-maps
 
     Returns:
         RGB image as np.array (M x N x 3)
 
     """
-    assert (len(fsc_map.shape)==2), 'Expected 2D input, got shape {}'.format(fsc_map.shape)
+    assert (len(sgs_map.shape) == 2), 'Expected 2D input, got shape {}'.format(sgs_map.shape)
 
     return _to_color(
-        fsc_map,
+        sgs_map,
         _sgs_color_table +  (_common_color_table_export if export else _common_color_table_presentation )
+    )
+
+
+def ssw_to_color(ssw_map, export):
+    """
+    Standard coloring for SGS maps
+    Args:
+        ssw_map: (M x N)  - values 0-100 = fsc %, -1 = cloud, -2 = no data / outside ROI
+        export (bool): wheter or not the output is ment export to tiff file or presentation (slightly different color-maps
+
+    Returns:
+        RGB image as np.array (M x N x 3)
+
+    """
+    assert (len(ssw_map.shape) == 2), 'Expected 2D input, got shape {}'.format(ssw_map.shape)
+
+    return _to_color(
+        ssw_map,
+        _ssw_color_table +  (_common_color_table_export if export else _common_color_table_presentation )
     )
 
 # Color table format:
 #   Each entry has:
 #   (min_value - inclusive, max_value - exclusive, color-triplet)
+
+_ssw_color_table = [
+    (0,1, (255, 255, 255)),
+    (1,2, (0, 0, 255)),
+    (2,3, (0, 140, 255)),
+    (3,4, (255, 140, 0)),
+    (4,5, (255, 255, 0)),
+    (5,6, (255, 0, 0)),
+    ]
 
 _fsc_color_table = [
         (0, 10, (30, 125, 30)),
