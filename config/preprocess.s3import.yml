@@ -1,0 +1,24 @@
+correction_factors:
+    slstr:
+        S1_radiance_an: 0.97
+        S2_radiance_an: 0.98
+        S3_radiance_an: 0.98
+        S5_radiance_an: 1.11
+        S6_radiance_an: 1.13
+products:
+    slstr:
+        S?_BT_in.nc:
+        - '*BT_in'
+        S?_radiance_an.nc:
+        - S?_radiance_an
+        geodetic_[ai]n.nc:
+        - latitude_?n
+        - longitude_?n
+        geodetic_tx.nc:
+        - latitude_tx
+        - longitude_tx
+        geometry_tn.nc:
+        - solar_zenith_tn
+        - solar_azimuth_tn
+        - sat_azimuth_tn
+        - sat_zenith_tn

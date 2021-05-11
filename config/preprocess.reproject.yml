@@ -1,0 +1,7 @@
+nprocs: 16
+chunks:
+    latitude: 100,
+    longitude: 100
+dynamic_utm_zone: False
+crs: "EPSG:32633"
+resolution: 500

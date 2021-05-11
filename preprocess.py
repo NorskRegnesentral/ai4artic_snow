@@ -1,72 +1,79 @@
+import logging
+from pathlib import Path
+import tempfile
+
+import click
+import numpy as np
+import xarray as xr
+
+from utils import conftools as ct
+from preprocess_s3import import s3import
+from preprocess_reproject import reproject
+from preprocess_reflectance import reflectance
 
 
-def preprocess(sen3_file, epsg):
-    """
-    Convert sentinel3 data to reflectance
-    Args:
-        sen3_file:
-        epsg:
+_logger = logging.getLogger(__name__)
 
-    Returns:
-        tuple with data bands as M x N np.arrays:
-        (
-            S1_reflectance_an,
-            S2_reflectance_an,
-            S3_reflectance_an,
-            S4_reflectance_an,
-            S5_reflectance_an,
-            S6_reflectance_an,
-            S7_BT_in,
-            S8_BT_in,
-            S9_BT_in,
-        )
-        Affine transform
-
-    """
-
-    # Todo: Implement algorithm to convert reflectance here.
+STEPS = {
+    "s3import": s3import,
+    "reproject": reproject,
+    "reflectance": reflectance,
+}
 
 
+def setup_config():
+    cfg = ct.load_directory(Path(__file__).parent / "config")
+    cfg = cfg.preprocess
+    for d in ("workdir", "tmpdir"):
+        cfg[d] = Path(cfg[d])
+        cfg[d].mkdir(parents=True, exist_ok=True)
+    return cfg
 
-    # Hack to main.py work on NR servers while this funciton is developed
-    import os
-    from  tqdm import tqdm
-    import numpy as np
-    from netCDF4._netCDF4 import Dataset
 
-    with open('/lokal-uten-backup-1tb/ai4artic_path.txt') as f:
-        ARCHIVE_S3_DATA_PATH = f.readline().strip('\n')
-    files =[]
-    date = "S3A_SL_1_RBT____20200326T100236_20200326T100536_20200327T152414_0179_056_236_1980_LN2_O_NT_004.SEN3".split('_')[7][:8]
-
-    folders = os.listdir(ARCHIVE_S3_DATA_PATH)
-    for dirpath in folders:
-        if date in dirpath:
-            if 'reflectance' in os.listdir(os.path.join(ARCHIVE_S3_DATA_PATH, dirpath)):
-                for file in os.listdir(os.path.join(ARCHIVE_S3_DATA_PATH, dirpath, 'reflectance')):
-                    path_to_file = os.path.join(ARCHIVE_S3_DATA_PATH, dirpath, 'reflectance', file)
-                    if Dataset(path_to_file).variables['source_meta'].filename == sen3_file:
-                        files.append(path_to_file)
-                        break
-    ds = Dataset(files[0])
-
-    # Find region with data
-    s3_transform = [
-        ds.variables['x'][1] - ds.variables['x'][0],
-        0,
-        float(ds.variables['x'][0]),
-        0,
-        ds.variables['y'][1] - ds.variables['y'][0],
-        float(ds.variables['y'][0]),
+def read_ofile(fpath):
+    bands = [
+        "S1_reflectance_an",
+        "S2_reflectance_an",
+        "S3_reflectance_an",
+        "S4_reflectance_an",
+        "S5_reflectance_an",
+        "S6_reflectance_an",
+        "S7_BT_in",
+        "S8_BT_in",
+        "S9_BT_in"
     ]
+    with xr.open_dataset(fpath) as ds:
+        return np.stack([ds[b].values.squeeze() for b in bands], axis=-1)
 
-    data_cube = []
-    bands = ['S1_reflectance_an', 'S2_reflectance_an', 'S3_reflectance_an', 'S4_reflectance_an', 'S5_reflectance_an',
-             'S6_reflectance_an', 'S7_BT_in', 'S8_BT_in', 'S9_BT_in']
 
-    for band in bands:
-        data = ds.variables[band][:].data
-        data[data == ds.variables[band]._FillValue] = np.nan
-        data_cube.append(data)
+def preprocess(ifile, cfg, overwrite=False):
+    tmpdir = cfg.tmpdir / ifile.stem
+    tmpdir.mkdir(parents=True, exist_ok=True)
+    for sname, func in STEPS.items():
+        _logger.info(sname)
+        ofile = cfg.workdir / sname / f"{ifile.stem}.nc"
+        if not overwrite and ofile.exists():
+            _logger.info("%s exists. Skip", ofile)
+            ifile = ofile
+            continue
+        ofile.parent.mkdir(parents=True, exist_ok=True)
+        _logger.debug(ofile)
+        with tempfile.TemporaryDirectory(dir=tmpdir, prefix=sname) as tdir:
+            ifile = func(ofile, ifile, Path(tdir), cfg[sname])
 
-    return data_cube, s3_transform
+    ofile = ifile
+    return ofile
+
+
+@click.command()
+@click.argument("ifile", type=Path)
+@click.option("--overwrite/--no-overwrite", default=False)
+def main(ifile, overwrite):
+    logging.basicConfig(level="DEBUG")
+    logging.getLogger("pyproj").setLevel("DEBUG")
+    cfg = setup_config()
+    preprocess(ifile, cfg, overwrite)
+
+
+if __name__ == "__main__":
+    main()
