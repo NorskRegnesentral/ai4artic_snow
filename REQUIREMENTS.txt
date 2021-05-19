@@ -3,3 +3,10 @@ matplotlib
 numpy
 rasterio
 tqdm
+xarray
+pyyaml
+rioxarray
+pyresample
+dask
+zarr
+lxml

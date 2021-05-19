@@ -9,7 +9,7 @@ from pathlib import Path
 from shapely.geometry import Polygon
 import zipfile
 
-from . import conftools as ct
+from preprocess import conftools as ct
 
 
 def parse_esa_datetime(datestr):

@@ -1,7 +1,9 @@
 import os
 
+import numpy as np
+
 from predict import predict
-from preprocess import preprocess
+from preprocess import  convert_sen3
 from utils.data_download import download_sentinel_data
 from utils.output_plot import output_plot
 from utils.rasterio_utils import merge_tiff_files
@@ -18,6 +20,9 @@ if __name__ == "__main__":
              'S3A_SL_1_RBT____20200326T095936_20200326T100236_20200327T152311_0179_056_236_1800_LN2_O_NT_004.SEN3',
              'S3A_SL_1_RBT____20200326T081836_20200326T082136_20200327T131915_0179_056_235_1800_LN2_O_NT_004.SEN3',
              'S3A_SL_1_RBT____20200326T095636_20200326T095936_20200327T152208_0179_056_236_1620_LN2_O_NT_004.SEN3']
+
+    work_dir = os.path.dirname(os.path.abspath(__file__)) #Both tmp-files and output files go here
+
     epsg = 32633
 
     rgb_imgs = []
@@ -26,32 +31,14 @@ if __name__ == "__main__":
     for s3_scene_identifier in scenes:
 
         # Download scene
-        safe_file = download_sentinel_data(s3_scene_identifier, os.path.dirname(os.path.abspath(__file__)) )
+        safe_file = '/nr/samba/jo/pro/AI4Artic/usr/andersuw/ai4artic_snow/S3A_SL_1_RBT____20200521T091019_20200521T091319_20200522T132040_0179_058_264_1980_LN2_O_NT_004.SEN3'#download_sentinel_data(s3_scene_identifier, work_dir)
 
-        # Convert from swath mode to radiance
-        (
-            S1_reflectance_an,
-            S2_reflectance_an,
-            S3_reflectance_an,
-            S4_reflectance_an,
-            S5_reflectance_an,
-            S6_reflectance_an,
-            S7_BT_in,
-            S8_BT_in,
-            S9_BT_in,
-        ),transform = preprocess(safe_file, epsg)
+        # Open SEN3 file, convert from swath mode, convert to reflectance
+        data_channels, transform = convert_sen3(safe_file, epsg)
 
         # Predict
         fsc_tiff, rgb_tiff = predict(
-            S1_reflectance_an,
-            S2_reflectance_an,
-            S3_reflectance_an,
-            S4_reflectance_an,
-            S5_reflectance_an,
-            S6_reflectance_an,
-            S7_BT_in,
-            S8_BT_in,
-            S9_BT_in,
+            *data_channels,
             s3_scene_identifier,
             transform
         )

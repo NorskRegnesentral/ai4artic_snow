@@ -7,12 +7,12 @@ import numpy as np
 import yaml
 import xarray as xr
 
-from utils.misc import function_with_exitstack
-from utils import xrtools as xrt
+from preprocess.misc import function_with_exitstack
+from preprocess import xrtools as xrt
 
 _logger = logging.getLogger(__name__)
 
-DOY_TO_SUN_DISTANCE = yaml.load((Path(__file__).parent / "lib/doy_to_sundist.yml").open("r"))
+DOY_TO_SUN_DISTANCE = yaml.load((Path(__file__).parent / "doy_to_sundist.yml").open("r"))
 ESUNS = {
   "S1_radiance_an": 1837.39,
   "S2_radiance_an": 1525.94,

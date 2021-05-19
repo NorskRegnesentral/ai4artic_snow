@@ -6,11 +6,10 @@ import click
 import numpy as np
 import xarray as xr
 
-from utils import conftools as ct
-from preprocess_s3import import s3import
-from preprocess_reproject import reproject
-from preprocess_reflectance import reflectance
-
+from preprocess import conftools as ct
+from preprocess.preprocess_reflectance import reflectance
+from preprocess.preprocess_reproject import reproject
+from preprocess.preprocess_s3import import s3import
 
 _logger = logging.getLogger(__name__)
 
@@ -43,7 +42,7 @@ def read_ofile(fpath):
         "S9_BT_in"
     ]
     with xr.open_dataset(fpath) as ds:
-        return np.stack([ds[b].values.squeeze() for b in bands], axis=-1)
+        return [ds[b].values.squeeze() for b in bands], ds.rio.transform()
 
 
 def preprocess(ifile, cfg, overwrite=False):
@@ -59,7 +58,7 @@ def preprocess(ifile, cfg, overwrite=False):
         ofile.parent.mkdir(parents=True, exist_ok=True)
         _logger.debug(ofile)
         with tempfile.TemporaryDirectory(dir=tmpdir, prefix=sname) as tdir:
-            ifile = func(ofile, ifile, Path(tdir), cfg[sname])
+            ifile = func(ofile, ifile, Path(tdir), cfg['preprocess'][sname])
 
     ofile = ifile
     return ofile

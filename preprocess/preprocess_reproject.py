@@ -5,7 +5,6 @@ import multiprocessing as mp
 import warnings
 
 import attr
-from affine import Affine
 import netCDF4
 import numpy as np
 import pyproj
@@ -17,8 +16,7 @@ import shapely.ops
 import xarray as xr
 import rioxarray  # noqa
 
-from utils import xrtools as xrt
-
+from preprocess import xrtools as xrt
 
 warnings.filterwarnings("ignore", ".*divide by zero.*")
 warnings.filterwarnings("ignore", ".*invalid value encountered.*")
@@ -186,7 +184,7 @@ def reproject_group(ofile, ifile, grp, vars, cfg):
             oda = oda.rename(y=dims[0], x=dims[1])
             oda = oda.rename(var)
             oda.attrs.update(ids[var].attrs)
-            oda = xrt.write_crs_cf(oda, crs=cfg.crs)
+            # oda = xrt.write_crs_cf(oda, crs=cfg.crs)
             oda = xrt.auto_encoding(oda, dtype="uint16")
             oda = oda.expand_dims(band=1)
 
@@ -210,6 +208,7 @@ def reproject(ofile, ifile, tmpdir, cfg):
     contents = get_netcdf_contents(ifile)
     get_extent(ifile, contents, cfg)
     for grp, vars in contents.items():
+        print(vars)
         reproject_group(tfile, ifile, grp, vars, cfg)
 
     tfile.rename(ofile)
