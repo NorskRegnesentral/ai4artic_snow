@@ -1,7 +1,7 @@
 nprocs: 16
 chunks:
-    latitude: 100,
-    longitude: 100
+    latitude: 15,
+    longitude: 15
 dynamic_utm_zone: False
 crs: 32633
 resolution: 500
