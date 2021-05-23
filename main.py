@@ -1,6 +1,7 @@
 import os
 import sys
 import datetime
+import traceback
 
 from predict import predict
 from preprocess import  convert_sen3
@@ -52,7 +53,8 @@ if __name__ == "__main__":
             rgb_imgs.append(rgb_tiff)
             fsc_imgs.append(fsc_tiff)
         except:
-            print('Failed'.format(i, len(scenes), s3_scene_identifier))
+            print('Failed {}/{} {}'.format(i, len(scenes), s3_scene_identifier))
+            traceback.print_exc()
 
     # Export tiff
     rgb_merge = merge_tiff_files(rgb_imgs, 'rgb.tif', no_data_val=-2)

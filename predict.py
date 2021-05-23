@@ -18,6 +18,7 @@ _tmp_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'tmp')
 if not os.path.isdir(_tmp_path):
     os.makedirs(_tmp_path)
 
+has_warned_missing_CUDA = False
 
 def predict(
     S1_reflectance_an,
@@ -50,6 +51,8 @@ def predict(
     Returns:
         (rbg image, fsc image) - if name is not None, then output is paths to the respective images. Otherwise it is the np.arrays
     """
+    global has_warned_missing_CUDA
+
     name = name.split('/')[-1]
     data_cube = [
         S1_reflectance_an,
@@ -68,7 +71,13 @@ def predict(
 
     model = UNet(n_classes=1, in_channels=9, depth=4, use_bn=True, partial_conv=True)
     model.load_state_dict( torch.load( _model_path ) )
-    model.cuda()
+    try:
+        model.cuda()
+    except:
+        if not has_warned_missing_CUDA:
+            print('Warning, computer is lacking GPU resources. Prediction will be slow')
+            has_warned_missing_CUDA=True
+
     model.eval()
     fsc = tiled_prediction(data_cube, model, [512, 512], [128, 128]).squeeze()
     fsc = np.clip(fsc, 0, 100)

@@ -12,3 +12,4 @@ zarr
 lxml
 sentinelsat
 osgeo
+shapely
