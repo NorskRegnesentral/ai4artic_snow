@@ -10,3 +10,5 @@ pyresample
 dask
 zarr
 lxml
+sentinelsat
+osgeo

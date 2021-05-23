@@ -1,23 +1,55 @@
 """
 Module with functions to work with API from www.eocloud.eu.
 """
-
-import binascii
 import os
-
-import json
-from urllib.error import HTTPError
-
-import multiprocessing
-
-import urllib
-import wget
 import zipfile
-
-from datetime import date
 import requests
+from sentinelsat import SentinelAPI, geojson_to_wkt, read_geojson
+import datetime
+import shapely.wkt
+try:
 
-def download_sentinel_data(  eodata_path, output_location, verbose=1, timeout=10 * 60, debug=False ):
+    with open('scihub_credentials.txt') as f:
+        lines = f.readlines()
+        user, password = lines[0:2]
+        user = user.strip('\n').strip('\b')
+        password = password.strip('\n').strip('\b')
+except:
+    raise Exception('Could not read login-credentials for scihub.copernicus.eu. These should be stored in "scihub_credentials.txt". See README.md for more instructions.')
+
+api = SentinelAPI(user, password, 'https://scihub.copernicus.eu/dhus')
+
+now = datetime.datetime.now().date()- datetime.timedelta(days=1)
+
+def get_product_identifiers(date):
+    date = date.date()
+    footprint = geojson_to_wkt(read_geojson(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'norway_sweden.json')))
+    scenes = api.query(footprint, date=(date , date+ datetime.timedelta(days=1)), raw='Sentinel-3')
+
+    selected_scenes = []
+    for scene in scenes.values():
+        id = scene['identifier']
+
+        #Only SLSTR level 1
+        if 'SL_1_RBT' not in id:
+            continue
+        poly1 = shapely.wkt.loads(footprint)
+        poly2 = shapely.wkt.loads(scene['footprint'])
+        intersection = poly1.intersection(poly2)
+
+        #Require some overlap
+        if intersection.area < 20:
+            continue
+        hour_of_day = int(id.split('_')[7].split('T')[1][:2])
+
+        #Limit to morning passes
+        if not( 7 <= hour_of_day <= 11):
+            continue
+        selected_scenes.append(id)
+
+
+    return selected_scenes
+def download_sentinel_data(  product_identifier, output_location, verbose=1, timeout=10 * 60, debug=False ):
     """
     Download and unzip a tile with satelite data.
 
@@ -29,78 +61,28 @@ def download_sentinel_data(  eodata_path, output_location, verbose=1, timeout=10
         debug (bool): run on main thread if set to True (timeout is ignored)
 
     Returns:
-        string: Path to SAFE-folder
+        string: Path to SEN3-folder
     """
+    global api
 
-    tmp_zip_file = os.path.join(
-        output_location,
-        str(os.getpid()) + "_" + str(binascii.hexlify(os.urandom(16))) + "_tmp.zip",
-    )
-    product_identifier = eodata_path.split('/')[-1]
+
+    products = api.query( identifier=product_identifier)
+    if len(products) != 1:
+        raise Exception('Could not find unique product with identifier:', product_identifier)
+
+    result = api.download_all(products, output_location)
+    if not len(result[0]) and len(result[1]):
+        raise Exception('Product were not available (only from LTA):', product_identifier)
+
+    tmp_zip_file = os.path.join(output_location, product_identifier + '.zip')
     safe_file = os.path.join(output_location, product_identifier + ".SAFE")
-
-    url = "http://185.48.233.249/" + eodata_path.split('eodata/')[-1]
-    if verbose:
-        print("Downloading", product_identifier, url)
-
-    # Download
-    # We need to do this async as it sometimes freezes
-    def _download(n_retries=0):
-        try:
-            wget.download(
-                url,
-                out=tmp_zip_file,
-                bar=wget.bar_thermometer if verbose else None,
-            )
-        except Exception as e:
-            if n_retries:
-                _download(n_retries - 1)
-            else:
-                raise e
-
-    n_retries = 5
-    if not debug:
-        i = 0
-        completed = False
-        while i < n_retries and not completed:
-            i += 1
-
-            p = multiprocessing.Process(target=_download, daemon=True)
-            p.start()
-            p.join(timeout=timeout)
-            if p.is_alive():
-                p.terminate()
-                p.join()
-                print("Retrying download.", n_retries - i, "retries left.")
-                continue
-            completed = True
-
-        if not completed:
-            raise TimeoutError("Download reached timeout ten times.")
-
-    else:
-        _download(n_retries)
-
-    if verbose:
-        print("\n")
-
-    if not os.path.isdir(output_location):
-
-        if verbose:
-            print("Making directory:", output_location)
-
-        os.makedirs(output_location)
-
-    if verbose:
-        print("Unziping", product_identifier)
 
     with zipfile.ZipFile(tmp_zip_file) as f:
         f.extractall(safe_file)
 
     os.remove(tmp_zip_file)
 
-    return safe_file
-
+    return os.path.join(safe_file, product_identifier+'.SEN3')
 
 
 def download_file_from_google_drive(google_drive_id, destination):

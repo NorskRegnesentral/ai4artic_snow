@@ -12,7 +12,8 @@ from preprocess import xrtools as xrt
 
 _logger = logging.getLogger(__name__)
 
-DOY_TO_SUN_DISTANCE = yaml.load((Path(__file__).parent / "doy_to_sundist.yml").open("r"))
+DOY_TO_SUN_DISTANCE = yaml.load((Path(__file__).parent / "doy_to_sundist.yml").open("r"), Loader = yaml.FullLoader)
+
 ESUNS = {
   "S1_radiance_an": 1837.39,
   "S2_radiance_an": 1525.94,

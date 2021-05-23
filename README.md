@@ -2,9 +2,9 @@
 #### Estimation of snow-parameters from sentinel-3 data using deep learning
 
 The goal of [the AI4Artic project](https://www.esa.int/Applications/Observing_the_Earth/Using_artificial_intelligence_to_automate_sea-ice_charting)
-were to develop AI/deep learning - based estimation of snow and ice parameters from 
-Sentinel data. The project was funded by ESA. 
-This repository contains code for the snow-part of the project. The code for the ice-part can be found [here](https://github.com/damaha/asip-v2).
+were to develop AI/deep learning - based estimation of snow and ice parameters from  Sentinel data. The project was 
+funded by ESA. This repository contains code for the snow-part of the project. The code for the ice-part can be found 
+[here](https://github.com/damaha/asip-v2).
 
 
 The deep learning model is based on the [UNet architecture](https://arxiv.org/abs/1505.04597). The input data is Sentinel-3 data from the SLSTR sensor. The model outputs the following snow-parameters as geotiff files:
@@ -22,14 +22,22 @@ Make sure you are running the code on a computer with python 3 and GDAL installe
     pip install -r REQUIREMENTS.txt
     wget PUT_MODEL_URL_HERE
 
+#### Save scihub-credentials to a text file to enable data-download
+Create an account at scihub.copernicus.eu (if you dont already have one). Create a new file at the root of this repository named
+```
+scihub_credentials.txt
+```
+Make two lines in the text file, the first with your username and the second with your password.
+
 ### Usage
 ```
-python main.py 
+python main.py YYYYMMDD
 ```
+Where YYYYMMDD is a date for which you desire snow products for. If omitted, the date for yesterday will be used.
 
 - main.py: A script to run the entire snow-pipeline
  
-    1. user specify which Sentinel-3 scenes to run the algorithm on
+    1. user specify which date to process
     2. data-downloading
     3. preprocessing (conversion to reflectance) 
     4. deep learning prediction 
