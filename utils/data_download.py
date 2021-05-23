@@ -7,9 +7,12 @@ import requests
 from sentinelsat import SentinelAPI, geojson_to_wkt, read_geojson
 import datetime
 import shapely.wkt
-try:
 
-    with open('scihub_credentials.txt') as f:
+
+DIRNAME = os.path.dirname(os.path.abspath(__file__))
+
+try:
+    with open(os.path.join(DIRNAME,'..','scihub_credentials.txt')) as f:
         lines = f.readlines()
         user, password = lines[0:2]
         user = user.strip('\n').strip('\b')
@@ -23,7 +26,7 @@ now = datetime.datetime.now().date()- datetime.timedelta(days=1)
 
 def get_product_identifiers(date):
     date = date.date()
-    footprint = geojson_to_wkt(read_geojson(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'norway_sweden.json')))
+    footprint = geojson_to_wkt(read_geojson(os.path.join(DIRNAME, 'norway_sweden.json')))
     scenes = api.query(footprint, date=(date , date+ datetime.timedelta(days=1)), raw='Sentinel-3')
 
     selected_scenes = []
