@@ -168,6 +168,7 @@ def reproject_group(ofile, ifile, grp, vars, cfg):
     resampler = get_resampler(ifile, grp, vars, cfg)
 
     for var in vars:
+        print(var)
         if "latitude" in var or "longitude" in var:
             _logger.debug("Skipping: %s", var)
             continue
@@ -208,7 +209,6 @@ def reproject(ofile, ifile, tmpdir, cfg):
     contents = get_netcdf_contents(ifile)
     get_extent(ifile, contents, cfg)
     for grp, vars in contents.items():
-        print(vars)
         reproject_group(tfile, ifile, grp, vars, cfg)
 
     tfile.rename(ofile)
