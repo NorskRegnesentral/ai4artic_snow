@@ -7,7 +7,7 @@ from preprocess.conftools import Config
 from preprocess.preprocess import preprocess, read_ofile
 import os
 
-def convert_sen3(sen3_file, epsg):
+def convert_sen3(sen3_file):
     """
     Convert sentinel3 data to reflectance
     Args:

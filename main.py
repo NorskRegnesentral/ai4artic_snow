@@ -1,8 +1,6 @@
 import os
 import sys
-from datetime import datetime
-
-import numpy as np
+import datetime
 
 from predict import predict
 from preprocess import  convert_sen3
@@ -14,15 +12,14 @@ from utils.rasterio_utils import merge_tiff_files
 if __name__ == "__main__":
 
     # Parse selected date
-    sys.argv.append('20210522')
     if len(sys.argv) == 2:
         try:
-            date = datetime.strptime(sys.argv[1], "%Y%m%d")
+            date = datetime.datetime.strptime(sys.argv[1], "%Y%m%d")
         except ValueError as e:
             print("Could not parse date")
             raise e
     else:
-        date = datetime.now() - datetime.timedelta(days=1) #Use yesterday as default
+        date = datetime.datetime.now() - datetime.timedelta(days=1) #Use yesterday as default
 
     # Find scenes to process
     scenes = get_product_identifiers(date)

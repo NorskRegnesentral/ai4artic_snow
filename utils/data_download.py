@@ -30,15 +30,15 @@ def get_product_identifiers(date):
     for scene in scenes.values():
         id = scene['identifier']
 
-        #Only SLSTR level 1
-        if 'SL_1_RBT' not in id:
+        #Only S3A SLSTR level 1
+        if 'S3A_SL_1_RBT___' not in id:
             continue
         poly1 = shapely.wkt.loads(footprint)
         poly2 = shapely.wkt.loads(scene['footprint'])
         intersection = poly1.intersection(poly2)
 
         #Require some overlap
-        if intersection.area < 20:
+        if intersection.area < 10:
             continue
         hour_of_day = int(id.split('_')[7].split('T')[1][:2])
 
