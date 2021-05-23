@@ -1,7 +1,7 @@
 {
-  "dockerimage": "test/proc_tutorial_shell:0.1",
-  "title": "gdalinfo to text",
-  "description": "Output gdalinfo on raster source to text file",
+  "dockerimage": "test/ai4artic_snow:0.1",
+  "title": "AI4Artic - snow",
+  "description": "Estimate FSC from S3 data using deep learning",
   "inputs": [
     {
       "identifier": "date",
