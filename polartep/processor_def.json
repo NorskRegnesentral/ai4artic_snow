@@ -1,0 +1,30 @@
+{
+  "dockerimage": "test/proc_tutorial_shell:0.1",
+  "title": "gdalinfo to text",
+  "description": "Output gdalinfo on raster source to text file",
+  "inputs": [
+    {
+      "identifier": "date",
+      "title": "Date to process",
+      "min_occurs": 1,
+      "max_occurs": 1,
+      "args": ["{date}"],
+      "literal": {
+        "type":["str"],
+        "max_size": 5000
+      }
+    }
+  ],
+  "outputs": [
+    {
+      "identifier": "fsc",
+      "title": "GeoTiff with Fractional Snow Cover",
+      "gs_publish": false,
+      "file": {
+        "mime_types": ["image/gtif"],
+        "pattern": "fsc.tiff",
+        "max_size": 5000
+      }
+    }
+  ]
+}

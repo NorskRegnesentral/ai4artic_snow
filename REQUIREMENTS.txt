@@ -13,3 +13,4 @@ lxml
 sentinelsat
 osgeo
 shapely
+netCDF4
