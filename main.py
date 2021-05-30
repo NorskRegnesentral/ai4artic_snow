@@ -13,17 +13,26 @@ from utils.rasterio_utils import merge_tiff_files
 if __name__ == "__main__":
 
     # Parse selected date
+    debug_flag = False
     if len(sys.argv) == 2:
-        try:
-            date = datetime.datetime.strptime(sys.argv[1], "%Y%m%d")
-        except ValueError as e:
-            print("Could not parse date")
-            raise e
+        if sys.argv == 'DEBUG':
+            date = datetime.datetime.now() - datetime.timedelta(days=1)  # Use yesterday as default
+            debug_flag = True
+        else:
+            try:
+                date = datetime.datetime.strptime(sys.argv[1], "%Y%m%d")
+            except ValueError as e:
+                print("Could not parse date")
+                raise e
     else:
         date = datetime.datetime.now() - datetime.timedelta(days=1) #Use yesterday as default
 
     # Find scenes to process
     scenes = get_product_identifiers(date)
+
+    if debug_flag:
+        scenes = scenes[0:1] #Make it a bit faster by only running one scene
+
     if len(scenes) == 0:
         print('Could not find any S3 scenes for {}. Please select a more recent date')
     print('Processing {} scenes from {}'.format(len(scenes), date))
