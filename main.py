@@ -15,7 +15,7 @@ if __name__ == "__main__":
     # Parse selected date
     debug_flag = False
     if len(sys.argv) == 2:
-        if sys.argv == 'DEBUG':
+        if sys.argv[1] == 'DEBUG':
             date = datetime.datetime.now() - datetime.timedelta(days=1)  # Use yesterday as default
             debug_flag = True
         else:
