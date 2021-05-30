@@ -3,8 +3,7 @@ FROM pytorch/pytorch
 #Setup
 ENV DEBIAN_FRONTEND=noninteractive
 RUN sed 's/main$/main universe multiverse/' -i /etc/apt/sources.list
-RUN apt-get update && apt-get install -y   build-essential   unzip   software-properties-common
-RUN apt install git
+RUN apt-get update && apt-get install -y   build-essential   unzip   software-properties-common git
 
 #Clone repo
 RUN git clone https://github.com/NorskRegnesentral/ai4artic_snow.git ~/ai4artic_snow
