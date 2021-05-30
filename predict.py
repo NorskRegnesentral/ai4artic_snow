@@ -70,7 +70,7 @@ def predict(
     data_cube[np.isnan(data_cube)] = 0
 
     model = UNet(n_classes=1, in_channels=9, depth=4, use_bn=True, partial_conv=True)
-    model.load_state_dict( torch.load( _model_path ) )
+    model.load_state_dict( torch.load( _model_path , map_location=lambda storage, loc: storage) )
     try:
         model.cuda()
     except:
