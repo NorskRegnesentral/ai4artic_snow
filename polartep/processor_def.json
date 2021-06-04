@@ -10,8 +10,7 @@
       "max_occurs": 1,
       "args": ["{date}"],
       "literal": {
-        "type":["str"],
-        "max_size": 5000
+        "type":["str"]
       }
     }
   ],
