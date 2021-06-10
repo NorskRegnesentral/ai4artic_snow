@@ -22,7 +22,8 @@ RUN apt -y update && apt -y install \
         libxmlsec1-dev \
         libffi-dev \
         liblzma-dev
-
+RUN apt-get update &&\
+    apt-get install -y binutils libproj-dev gdal-bin
 #Clone repo
 RUN git clone https://github.com/NorskRegnesentral/ai4artic_snow.git ~/ai4artic_snow
 
