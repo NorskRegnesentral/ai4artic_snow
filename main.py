@@ -1,3 +1,4 @@
+import glob
 import os
 import sys
 import datetime
@@ -18,14 +19,10 @@ if __name__ == "__main__":
         if sys.argv[1] == 'DEBUG':
             date = datetime.datetime.now() - datetime.timedelta(days=1)  # Use yesterday as default
             debug_flag = True
-            os.makedirs('~/workdir')
-            import glob
 
-            # root_dir needs a trailing slash (i.e. /root/dir/)
-
-            with open('fsc.tif','w') as f:
+            with open('~/ai4artic_snow/fsc.tif','w') as f:
                 f.write('ehy')
-            for filename in glob.iglob('.', recursive=True):
+            for filename in glob.iglob('./**/*', recursive=True):
                 print(filename)
 
             exit(0)
