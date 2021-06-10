@@ -19,6 +19,7 @@ RUN chmod +x /tmp/entrypoint.sh
 WORKDIR ~/ai4artic_snow
 
 COPY scihub_credentials.txt .
+COPY creodias_credentials.txt .
 
 # Set entrypoint
 ENTRYPOINT ["/tmp/entrypoint.sh"]
