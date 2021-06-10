@@ -11,6 +11,6 @@ dask
 zarr
 lxml
 sentinelsat
-osgeo
+gdal
 shapely
 netCDF4
