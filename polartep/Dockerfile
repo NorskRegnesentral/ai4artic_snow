@@ -12,10 +12,11 @@ RUN git clone https://github.com/NorskRegnesentral/ai4artic_snow.git ~/ai4artic_
 RUN add-apt-repository ppa:ubuntugis/ppa
 RUN apt-get update
 RUN apt-get install -y gdal-bin
+RUN ogrinfo --version
 RUN apt-get install -y libgdal-dev
 RUN export CPLUS_INCLUDE_PATH=/usr/include/gdal
 RUN export C_INCLUDE_PATH=/usr/include/gdal
-RUN pip install GDAL
+RUN pip install gdal==2.4.2
 RUN pip install -r ~/ai4artic_snow/REQUIREMENTS.txt
 
 # Add special entrypoint
