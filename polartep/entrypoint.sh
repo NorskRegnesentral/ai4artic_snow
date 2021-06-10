@@ -8,3 +8,4 @@ cp creodias_credentials.txt ~/ai4artic_snow/
 cd ~/ai4artic_snow/
 git pull
 python ~/ai4artic_snow/main.py $1
+
