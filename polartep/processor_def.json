@@ -21,7 +21,7 @@
       "gs_publish": false,
       "file": {
         "mime_types": ["image/gtif"],
-        "pattern": "fsc.tiff",
+        "pattern": "fsc.tif",
         "max_size": 5000
       }
     }

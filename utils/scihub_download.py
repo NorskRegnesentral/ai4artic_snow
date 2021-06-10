@@ -1,5 +1,5 @@
 """
-Module with functions to work with API from www.eocloud.eu.
+Module with functions to work with API scihub.
 """
 import os
 import zipfile
@@ -8,46 +8,51 @@ from sentinelsat import SentinelAPI, geojson_to_wkt, read_geojson
 import datetime
 import shapely.wkt
 
-from utils.creodias_download import download, query
 
 DIRNAME = os.path.dirname(os.path.abspath(__file__))
 
+try:
+    with open(os.path.join(DIRNAME,'..','scihub_credentials.txt')) as f:
+        lines = f.readlines()
+        user, password = lines[0:2]
+        user = user.strip('\n').strip('\b')
+        password = password.strip('\n').strip('\b')
+except:
+    raise Exception('Could not read login-credentials for scihub.copernicus.eu. These should be stored in "scihub_credentials.txt". See README.md for more instructions.')
+
+api = SentinelAPI(user, password, 'https://scihub.copernicus.eu/dhus')
+
+now = datetime.datetime.now().date()- datetime.timedelta(days=1)
 
 def get_product_identifiers(date):
     date = date.date()
     footprint = geojson_to_wkt(read_geojson(os.path.join(DIRNAME, 'norway_sweden.json')))
-
-    scenes = query(
-        'Sentinel3',
-        start_date=date,
-        end_date=date+ datetime.timedelta(days=1),
-        geometry=footprint,
-    )
+    scenes = api.query(footprint, date=(date , date+ datetime.timedelta(days=1)), raw='Sentinel-3')
 
     selected_scenes = []
     for scene in scenes.values():
-        id = scene['properties']['title']
+        id = scene['identifier']
 
         #Only S3A SLSTR level 1
         if 'S3A_SL_1_RBT___' not in id:
             continue
         poly1 = shapely.wkt.loads(footprint)
-        poly2 = shapely.wkt.loads(geojson_to_wkt(scene))
+        poly2 = shapely.wkt.loads(scene['footprint'])
         intersection = poly1.intersection(poly2)
 
         #Require some overlap
-        if intersection.area/poly1.area < .10:
+        if intersection.area < 10:
             continue
         hour_of_day = int(id.split('_')[7].split('T')[1][:2])
 
         #Limit to morning passes
-        if not( 7 <= hour_of_day <= 12):
+        if not( 7 <= hour_of_day <= 11):
             continue
-        selected_scenes.append(scene)
+        selected_scenes.append(id)
 
 
     return selected_scenes
-def download_sentinel_data(  scene, output_location):
+def download_sentinel_data(  product_identifier, output_location, verbose=1, timeout=10 * 60, debug=False ):
     """
     Download and unzip a tile with satelite data.
 
@@ -63,13 +68,16 @@ def download_sentinel_data(  scene, output_location):
     """
     global api
 
-    product_identifier = scene['properties']['title'].replace('.SEN3','')
+
+    products = api.query( identifier=product_identifier)
+    if len(products) != 1:
+        raise Exception('Could not find unique product with identifier:', product_identifier)
+
+    result = api.download_all(products, output_location)
+    if not len(result[0]) and len(result[1]):
+        raise Exception('Product were not available (only from LTA):', product_identifier)
+
     tmp_zip_file = os.path.join(output_location, product_identifier + '.zip')
-
-    download(scene['id'], tmp_zip_file, show_progress=True)
-    # if not len(result[0]) and len(result[1]):
-    #     raise Exception('Product were not available (only from LTA):', product_identifier)
-
     safe_file = os.path.join(output_location, product_identifier + ".SAFE")
 
     with zipfile.ZipFile(tmp_zip_file) as f:

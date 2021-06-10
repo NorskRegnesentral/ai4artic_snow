@@ -22,10 +22,10 @@ Make sure you are running the code on a computer with python 3 and GDAL installe
     pip install -r REQUIREMENTS.txt
     wget PUT_MODEL_URL_HERE
 
-#### Save scihub-credentials to a text file to enable data-download
-Create an account at scihub.copernicus.eu (if you dont already have one). Create a new file at the root of this repository named
+#### Save creodias-credentials to a text file to enable data-download
+Create an account at creodias.eu (if you dont already have one). Create a new file at the root of this repository named
 ```
-scihub_credentials.txt
+creodias_credentials.txt
 ```
 Make two lines in the text file, the first with your username and the second with your password.
 

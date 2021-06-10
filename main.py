@@ -18,6 +18,9 @@ if __name__ == "__main__":
         if sys.argv[1] == 'DEBUG':
             date = datetime.datetime.now() - datetime.timedelta(days=1)  # Use yesterday as default
             debug_flag = True
+            with open('fsc.tif','w') as f:
+                f.write('ehy')
+            exit(0)
         else:
             try:
                 date = datetime.datetime.strptime(sys.argv[1], "%Y%m%d")
@@ -42,12 +45,13 @@ if __name__ == "__main__":
     rgb_imgs = []
     fsc_imgs = []
 
-    for i,s3_scene_identifier in enumerate(scenes):
+    for i,scene in enumerate(scenes):
+        s3_scene_identifier = scene['properties']['title']
         print('{}/{} {}'.format(i,len(scenes), s3_scene_identifier))
         try:
 
             # Download scene
-            sen3_folder = download_sentinel_data(s3_scene_identifier, work_dir)
+            sen3_folder = download_sentinel_data(scene, work_dir)
 
             # Open SEN3 file, convert from swath mode, convert to reflectance
             data_channels, transform = convert_sen3(sen3_folder)

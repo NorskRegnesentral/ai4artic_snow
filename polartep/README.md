@@ -2,7 +2,7 @@ This folder contains required files to create a processor at polartep.io. The pr
 
 
 #### Credentials:
-Credentials are added to the container by copying the "scihub_credentials.txt". Make a copy of the one you have in the parent directory to this directory to make it available to the docker build routine.
+Credentials are added to the container by copying the "creodias_credentials.txt". Make a copy of the one you have in the parent directory to this directory to make it available to the docker build routine.
 
 #### More info on Polartep and processors:
 
