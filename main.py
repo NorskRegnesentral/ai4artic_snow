@@ -22,11 +22,12 @@ if __name__ == "__main__":
             import glob
 
             # root_dir needs a trailing slash (i.e. /root/dir/)
-            for filename in glob.iglob('~/**/*' , recursive=True):
+
+            with open('fsc.tif','w') as f:
+                f.write('ehy')
+            for filename in glob.iglob('.', recursive=True):
                 print(filename)
 
-            with open('~/workdir/fsc.tif','w') as f:
-                f.write('ehy')
             exit(0)
         else:
             try:
