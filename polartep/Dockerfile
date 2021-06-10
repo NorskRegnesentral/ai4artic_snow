@@ -5,7 +5,6 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN sed 's/main$/main universe multiverse/' -i /etc/apt/sources.list
 RUN apt-get update && apt-get install -y   build-essential   unzip   software-properties-common git
 RUN apt -y update && apt -y install \
-        git \
         make \
         build-essential \
         libssl-dev \
@@ -22,10 +21,7 @@ RUN apt -y update && apt -y install \
         libxml2-dev \
         libxmlsec1-dev \
         libffi-dev \
-        liblzma-dev && \
-    git clone https://github.com/pyenv/pyenv.git $PYENV_ROOT && \
-    apt -y remove --purge git && apt -y autoremove --purge && \
-    rm -rf /var/lib/apt/lists/*
+        liblzma-dev
 
 #Clone repo
 RUN git clone https://github.com/NorskRegnesentral/ai4artic_snow.git ~/ai4artic_snow
