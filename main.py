@@ -23,6 +23,7 @@ if __name__ == "__main__":
             with open('fsc.tif','w') as f:
                 f.write('ehy')
             print(os.system('pwd'))
+            print(os.system('ls -lt'))
 
             exit(0)
         else:
