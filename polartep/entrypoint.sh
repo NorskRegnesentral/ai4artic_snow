@@ -3,9 +3,9 @@
 # out: fsc.tiff
 
 # Run python code
-cp scihub_credentials.txt ~/ai4artic_snow/
-cp creodias_credentials.txt ~/ai4artic_snow/
-cd ~/ai4artic_snow/
+cp scihub_credentials.txt /root/ai4artic_snow
+cp creodias_credentials.txt /root/ai4artic_snow
+cd /root/ai4artic_snow
 git pull
-python ~/ai4artic_snow/main.py $1
+python /root/ai4artic_snow/main.py $1
 
