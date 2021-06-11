@@ -20,10 +20,9 @@ if __name__ == "__main__":
             date = datetime.datetime.now() - datetime.timedelta(days=1)  # Use yesterday as default
             debug_flag = True
 
-            with open('~/ai4artic_snow/fsc.tif','w') as f:
+            with open('fsc.tif','w') as f:
                 f.write('ehy')
-            for filename in glob.iglob('./**/*', recursive=True):
-                print(filename)
+            print(os.system('pwd'))
 
             exit(0)
         else:

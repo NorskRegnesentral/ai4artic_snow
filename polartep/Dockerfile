@@ -24,7 +24,7 @@ ADD entrypoint.sh /tmp/entrypoint.sh
 RUN chmod +x /tmp/entrypoint.sh
 
 # Create workdir
-WORKDIR ~/ai4artic_snow
+WORKDIR /root/ai4artic_snow
 
 COPY scihub_credentials.txt .
 COPY creodias_credentials.txt .
