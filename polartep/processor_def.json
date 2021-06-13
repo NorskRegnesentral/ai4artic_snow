@@ -21,7 +21,7 @@
       "gs_publish": false,
       "file": {
         "mime_types": ["image/gtif"],
-        "pattern": "/root/ai4artic_snow/fsc.tif",
+        "pattern": "fsc.tif",
         "max_size": 5000
       }
     }

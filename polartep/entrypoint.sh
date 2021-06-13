@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 # args: date
-# out: fsc.tiff
+# out: fsc.tif
 
 # Run python code
 cp scihub_credentials.txt /root/ai4artic_snow
 cp creodias_credentials.txt /root/ai4artic_snow
-cd /root/ai4artic_snow
-git pull
+git pull /root/ai4artic_snow
 python /root/ai4artic_snow/main.py $1
 
