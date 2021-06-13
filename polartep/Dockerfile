@@ -6,7 +6,7 @@ RUN sed 's/main$/main universe multiverse/' -i /etc/apt/sources.list
 RUN apt-get update && apt-get install -y   build-essential   unzip   software-properties-common git
 
 #Clone repo
-RUN git clone https://github.com/NorskRegnesentral/ai4artic_snow.git ~/ai4artic_snow
+RUN git clone https://github.com/NorskRegnesentral/ai4artic_snow.git /root/ai4artic_snow
 
 # Setup code and requirements
 RUN add-apt-repository ppa:ubuntugis/ppa
@@ -17,7 +17,7 @@ RUN apt-get install -y libgdal-dev
 RUN export CPLUS_INCLUDE_PATH=/usr/include/gdal
 RUN export C_INCLUDE_PATH=/usr/include/gdal
 RUN pip install gdal==2.4.2
-RUN pip install -r ~/ai4artic_snow/REQUIREMENTS.txt
+RUN pip install -r /root/ai4artic_snow/REQUIREMENTS.txt
 
 # Add special entrypoint
 ADD entrypoint.sh /tmp/entrypoint.sh
