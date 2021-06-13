@@ -1,7 +1,7 @@
-# AI4Artic - snow   
+# AI4Arctic - snow   
 #### Estimation of snow-parameters from sentinel-3 data using deep learning
 
-The goal of [the AI4Artic project](https://www.esa.int/Applications/Observing_the_Earth/Using_artificial_intelligence_to_automate_sea-ice_charting)
+The goal of [the AI4Arctic project](https://www.esa.int/Applications/Observing_the_Earth/Using_artificial_intelligence_to_automate_sea-ice_charting)
 were to develop AI/deep learning - based estimation of snow and ice parameters from  Sentinel data. The project was 
 funded by ESA. This repository contains code for the snow-part of the project. The code for the ice-part can be found 
 [here](https://github.com/damaha/asip-v2).
