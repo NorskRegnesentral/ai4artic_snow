@@ -5,5 +5,5 @@
 # Run python code
 git pull /root/ai4artic_snow
 python /root/ai4artic_snow/main.py $1
-cp /root/ai4artic_snow/fsc.tif /workdir/fsc.tif
+cp fsc.tif /workdir/fsc.tif
 
