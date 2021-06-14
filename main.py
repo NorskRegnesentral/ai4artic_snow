@@ -19,13 +19,6 @@ if __name__ == "__main__":
         if sys.argv[1] == 'DEBUG':
             date = datetime.datetime.now() - datetime.timedelta(days=1)  # Use yesterday as default
             debug_flag = True
-
-            with open('fsc.tif','w') as f:
-                f.write('ehy')
-            print(os.system('pwd'))
-            print(os.system('ls -lt'))
-
-            exit(0)
         else:
             try:
                 date = datetime.datetime.strptime(sys.argv[1], "%Y%m%d")
