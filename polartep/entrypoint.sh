@@ -3,6 +3,6 @@
 # out: fsc.tif
 
 # Run python code
-git pull /root/ai4artic_snow
+git -C /root/ai4artic_snow pull
 python /root/ai4artic_snow/main.py $1
 
