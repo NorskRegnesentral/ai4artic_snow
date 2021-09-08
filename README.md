@@ -44,5 +44,5 @@ Where YYYYMMDD is a date for which you desire snow products for. If omitted, the
 
         
 ### Contact
-For questions, contact [Anders U. Waldeland](https://www.nr.no/user-info?query=andersuw) at 
+For questions, contact [Anders U. Waldeland](https://nr.no/ansatte/anders-ueland-waldeland/) at 
 anders@nr.no
