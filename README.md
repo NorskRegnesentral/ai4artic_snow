@@ -20,7 +20,6 @@ Make sure you are running the code on a computer with python 3 and GDAL installe
     python -m virtualenv env
     source env/bin/activate
     pip install -r REQUIREMENTS.txt
-    wget PUT_MODEL_URL_HERE
 
 #### Save creodias-credentials to a text file to enable data-download
 Create an account at creodias.eu (if you dont already have one). Create a new file at the root of this repository named
